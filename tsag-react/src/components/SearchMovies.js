@@ -3,6 +3,7 @@ import { connect, useDispatch } from "react-redux";
 import { getMovies } from "../actions";
 import { useState } from "react";
 import { useStore } from "react-redux";
+import { useEffect } from "react";
 
 let SearchMovies = ({ getMovies }) => {
   const dispatch = useDispatch();

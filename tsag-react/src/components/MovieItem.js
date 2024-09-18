@@ -6,6 +6,11 @@ import { useDispatch } from "react-redux";
 let MovieItem = ({ movies = [], response, totalResults }) => {
   const dispatch = useDispatch();
 
+  const saveMovie = (event) => {
+    const imbdID = event.target.getAttribute("data-imbdid");
+    dispatch({ type: "SAVE_MOVIES", imbdID: imbdID });
+  };
+
   const mappedMovies = movies.map((movie) => (
     <article
       key={uuidv4()}
@@ -25,7 +30,11 @@ let MovieItem = ({ movies = [], response, totalResults }) => {
         />
       </div>
       <div>
-        <button className="text-white text-sx sm:text-sm p-2 w-12 sm:w-20  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+        <button
+          data-imbdid={movie.imdbID}
+          onClick={saveMovie}
+          className="text-white text-sx sm:text-sm p-2 w-12 sm:w-20  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+        >
           Save
         </button>
       </div>

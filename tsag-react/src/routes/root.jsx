@@ -1,5 +1,9 @@
 import { Outlet, Link } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import "../output.css";
+import "react-toastify/dist/ReactToastify.css";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 export default function Root() {
   return (
@@ -83,8 +87,8 @@ export function SideBar() {
           </ul>
         </div>
       </aside>
-
       <div className="sm:ml-64 p-4">
+        <ToastContainer />
         <div className="">
           <Outlet />
         </div>
@@ -94,9 +98,7 @@ export function SideBar() {
 }
 
 export async function loader() {
-  const contacts = await fetch(
-    "http://www.omdbapi.com/?apikey=4b7f2d72"
-  );
+  const contacts = await fetch("http://www.omdbapi.com/?apikey=4b7f2d72");
 
   if (contacts) return { contacts };
 }

@@ -19,6 +19,7 @@ const sagaMiddleware = createSagaMiddleware();
 const store = configureStore({
   reducer: reducer,
   middleware: () => new Tuple(sagaMiddleware, logger),
+  preloadedState: { savedMovies: {} },
 });
 
 sagaMiddleware.run(rootSaga);
