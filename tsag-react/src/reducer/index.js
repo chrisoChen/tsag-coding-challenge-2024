@@ -1,7 +1,7 @@
 const reducer = (state = {}, action) => {
   switch (action.type) {
     case "GET_MOVIES":
-      return { ...state, loading: true };
+      return { ...state, loading: true, searchTerm: action.searchTerm};
     case "MOVIES_RECEIVED":
       return {
         ...state,

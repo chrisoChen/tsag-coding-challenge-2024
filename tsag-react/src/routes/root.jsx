@@ -84,8 +84,8 @@ export function SideBar() {
         </div>
       </aside>
 
-      <div className="sm:ml-64 min-h-screen p-4 dark:border-gray-700">
-        <div className="border-2 h-full rounded-lg p-4">
+      <div className="sm:ml-64 p-4">
+        <div className="">
           <Outlet />
         </div>
       </div>
