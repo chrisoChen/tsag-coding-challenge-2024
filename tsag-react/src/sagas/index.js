@@ -13,8 +13,7 @@ function* fetchMovies(action) {
 }
 
 function* saveMovies(action) {
-  // Get more data to save movies in database
-
+  // Search for provided movies from our movies API
   const json = yield fetch(
     `http://www.omdbapi.com/?i=${action.imbdID}&apikey=${apiKey}`
   ).then((response) => response.json());
@@ -69,15 +68,26 @@ function* saveMovies(action) {
     .then((response) => response.json())
     .then((data) => {
       console.log(data);
-      toast("Success: ", data);
+      toast(`Successfully saved ${data.title}.`);
     })
     .catch((error) => {
-      toast.error("Error:", error);
+      let errorMessage = `Error:${error}`;
+
+      toast.error("errorMessage");
+      throw new Error(errorMessage);
     });
 
   yield put({ type: "MOVIES_SAVED", imdbID: action.imbdID });
+}
 
-  toast(`${json.Title} has been saved!`);
+function* getStoredMovies(action) {
+  const json = yield fetch(`http://127.0.0.1:8000/movies/${action.cookieId}`)
+    .then((response) => response.json())
+    .catch((err) => {
+      toast(`Error: something bad happened when retrieving your saved movies.`);
+      console.log(err);
+    });
+  yield put({ type: "GET_STORED_MOVIES_COMPLETE", savedMoviesDB: json });
 }
 
 function* actionWatcher() {
@@ -88,6 +98,9 @@ function* saveMovieWatcher() {
   yield takeLatest("SAVE_MOVIES", saveMovies);
 }
 
+function* getStoredMoviesWatcher() {
+  yield takeLatest("GET_STORED_MOVIES", getStoredMovies);
+}
 export default function* rootSaga() {
-  yield all([actionWatcher(), saveMovieWatcher()]);
+  yield all([actionWatcher(), saveMovieWatcher(), getStoredMoviesWatcher()]);
 }

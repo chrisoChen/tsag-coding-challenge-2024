@@ -25,6 +25,25 @@ const reducer = (state = {}, action) => {
           },
         };
       else return state;
+    case "GET_STORED_MOVIES":
+      return {
+        ...state,
+        cookieID: action.cookieID,
+      };
+    case "GET_STORED_MOVIES_COMPLETE":
+      let extractedDBMovies = action.savedMoviesDB.reduce((acc, current) => {
+        acc[current.imdb_id] = current.imdb_id;
+        return acc;
+      }, {});
+
+      return {
+        ...state,
+        savedMoviesDB: action.savedMoviesDB,
+        savedMovies: {
+          ...state.savedMovies,
+          ...extractedDBMovies,
+        },
+      };
     default:
       return state;
   }

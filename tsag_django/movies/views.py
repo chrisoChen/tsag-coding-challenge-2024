@@ -23,6 +23,14 @@ class MoviesDetailView(RetrieveAPIView):
     serializer_class = MoviesSerializer
     lookup_field = 'id'
 
+
+# Get movies based on cookie id
+class MoviesDetailCookieIdView(ListAPIView):
+    queryset = Movies.objects.all()
+    serializer_class = MoviesSerializer
+    lookup_field = 'cookie_id'
+
+
 # Get all movies
 class MoviesListView(ListAPIView):
     queryset = Movies.objects.all()
