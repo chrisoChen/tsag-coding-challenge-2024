@@ -5,6 +5,7 @@ import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./error-page";
 import Root from "./routes/root";
+import MyMovies from "./routes/myMovies";
 import Search from "./routes/search";
 import reducer from "./reducer";
 import { Provider } from "react-redux";
@@ -12,7 +13,7 @@ import { logger } from "redux-logger";
 import { applyMiddleware } from "redux";
 import createSagaMiddleware from "redux-saga";
 import { configureStore, Tuple } from "@reduxjs/toolkit";
-import { CookiesProvider } from 'react-cookie';
+import { CookiesProvider } from "react-cookie";
 import rootSaga from "./sagas";
 
 const sagaMiddleware = createSagaMiddleware();
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
         path: "search",
         element: <Search />,
       },
+      {
+        path: "my-movies",
+        element: <MyMovies />,
+      },
     ],
   },
 ]);
@@ -43,9 +48,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <CookiesProvider>
-        <Provider store={store}>
-          <RouterProvider router={router} />
-        </Provider>
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
     </CookiesProvider>
   </React.StrictMode>
 );

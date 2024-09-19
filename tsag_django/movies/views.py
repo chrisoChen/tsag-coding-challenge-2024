@@ -40,7 +40,7 @@ class MoviesListView(ListAPIView):
 # Delete a movie
 class MoviesDeleteView(DestroyAPIView):
     queryset = Movies.objects.all()
-    lookup_field = 'id'
-
+    serializer_class = MoviesSerializer
+    lookup_field = 'imdb_id'
 
 

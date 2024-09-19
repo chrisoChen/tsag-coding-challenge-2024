@@ -4,14 +4,15 @@ import { v4 as uuidv4 } from "uuid";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { useCookies } from "react-cookie";
+import MovieCard from "./MovieCard";
 
 let MovieItem = ({ movies = [], savedMovies = {}, response, totalResults }) => {
   const dispatch = useDispatch();
   const [cookies, setCookie] = useCookies("userId");
 
   const saveMovie = (event) => {
-    const imbdID = event.target.getAttribute("data-imbdid");
-    dispatch({ type: "SAVE_MOVIES", imbdID: imbdID, cookieId: cookies.userId });
+    const imdbID = event.target.getAttribute("data-imdbid");
+    dispatch({ type: "SAVE_MOVIES", imdbID: imdbID, cookieID: cookies.userId });
   };
 
   const maxMovies = 5;
@@ -26,19 +27,12 @@ let MovieItem = ({ movies = [], savedMovies = {}, response, totalResults }) => {
       key={uuidv4()}
       className="mx-auto text-red-500 max-w-15 w-3/5 justify-self-end flex flex-col items-center gap-2"
     >
-      <div className="text-center">
-        <h1>{movie.Title}</h1>
-        <p className="">({movie.Year})</p>
-      </div>
-      <div></div>
-      <div>
-        <img
-          className="h-auto max-w-22 border-4 border-solid border-purple-300 "
-          src={movie.Poster}
-          alt=""
-          data-imbdid={movie.imdbID}
-        />
-      </div>
+      <MovieCard
+        title={movie.Title}
+        year={movie.Year}
+        poster={movie.Poster}
+        imdbID={movie.imdbID}
+      />
       <div>
         <button
           title={
@@ -49,7 +43,7 @@ let MovieItem = ({ movies = [], savedMovies = {}, response, totalResults }) => {
               : `Save ${movie.Title}`
           }
           type="button"
-          data-imbdid={movie.imdbID}
+          data-imdbid={movie.imdbID}
           onClick={saveMovie}
           disabled={`${movie.imdbID}` in savedMovies || limitReached}
           className="text-white text-sx sm:text-sm p-2 w-12 sm:w-20  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 disabled:opacity-30"

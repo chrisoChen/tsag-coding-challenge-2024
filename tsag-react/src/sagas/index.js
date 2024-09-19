@@ -15,10 +15,10 @@ function* fetchMovies(action) {
 function* saveMovies(action) {
   // Search for provided movies from our movies API
   const json = yield fetch(
-    `http://www.omdbapi.com/?i=${action.imbdID}&apikey=${apiKey}`
+    `http://www.omdbapi.com/?i=${action.imdbID}&apikey=${apiKey}`
   ).then((response) => response.json());
 
-  // Format ratings data
+  // Format keys in ratings data to match DB model
   let ratingsLowercased = json.Ratings.map((rating) => {
     return Object.keys(rating).reduce((newObj, key) => {
       newObj[key.toLowerCase()] = rating[key];
@@ -26,10 +26,8 @@ function* saveMovies(action) {
     }, {});
   });
 
-  console.log(ratingsLowercased);
-
   const data = {
-    cookie_id: `${action.cookieId}`,
+    cookie_id: `${action.cookieID}`,
     title: json.Title,
     year: json.Year,
     rated: json.rated,
@@ -56,8 +54,6 @@ function* saveMovies(action) {
     website: json.Website,
   };
 
-  console.log(data);
-  // TODO: Save movie to database
   fetch("http://127.0.0.1:8000/movies/create/", {
     method: "POST",
     headers: {
@@ -77,7 +73,10 @@ function* saveMovies(action) {
       throw new Error(errorMessage);
     });
 
-  yield put({ type: "MOVIES_SAVED", imdbID: action.imbdID });
+  if (action.limitReached)
+    toast(`Limit of ${action.maxMovies} reached for saving movies!`);
+
+  yield put({ type: "MOVIES_SAVED", imdbID: action.imdbID });
 }
 
 function* getStoredMovies(action) {
@@ -88,6 +87,28 @@ function* getStoredMovies(action) {
       console.log(err);
     });
   yield put({ type: "GET_STORED_MOVIES_COMPLETE", savedMoviesDB: json });
+}
+
+function* deleteMovie(action) {
+  const json = yield fetch(
+    `http://127.0.0.1:8000/movies/${action.imdbID}/delete/`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  )
+    .then((response) => response.json)
+    .then((data) => {
+      toast(`Deleted the movie!`);
+    })
+    .catch((err) => {
+      toast("Error: couldn't delete the movie.");
+      throw new Error();
+    });
+
+  yield put({ type: "MOVIES_DELETED", imdbID: action.imdbID });
 }
 
 function* actionWatcher() {
@@ -101,6 +122,16 @@ function* saveMovieWatcher() {
 function* getStoredMoviesWatcher() {
   yield takeLatest("GET_STORED_MOVIES", getStoredMovies);
 }
+
+function* deleteMovieWatcher() {
+  yield takeLatest("DELETE_MOVIE", deleteMovie);
+}
+
 export default function* rootSaga() {
-  yield all([actionWatcher(), saveMovieWatcher(), getStoredMoviesWatcher()]);
+  yield all([
+    actionWatcher(),
+    saveMovieWatcher(),
+    getStoredMoviesWatcher(),
+    deleteMovieWatcher(),
+  ]);
 }

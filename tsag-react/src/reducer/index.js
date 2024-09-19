@@ -13,10 +13,11 @@ const reducer = (state = {}, action) => {
     case "SAVE_MOVIES":
       return {
         ...state,
-        imbdID: action.imdbID,
+        imdbID: action.imdbID,
+        cookiesID: action.cookieID,
       };
     case "MOVIES_SAVED":
-      if (state.savedMovies && !(action.imbdID in state.savedMovies))
+      if (state.savedMovies && !(action.imdbID in state.savedMovies))
         return {
           ...state,
           savedMovies: {
@@ -43,6 +44,25 @@ const reducer = (state = {}, action) => {
           ...state.savedMovies,
           ...extractedDBMovies,
         },
+      };
+    case "DELETE_MOVIE":
+      return {
+        ...state,
+        imdbID: action.imdbID,
+        cookieID: action.cookieID,
+      };
+    case "MOVIES_DELETED":
+      const newSavedMoviesDB = state.savedMoviesDB.filter(
+        (item) => item.imdb_id !== action.imdbID
+      );
+
+      const newSavedMovies = { ...state.savedMovies };
+      delete newSavedMovies[action.imdbID];
+
+      return {
+        ...state,
+        savedMoviesDB: newSavedMoviesDB,
+        savedMovies: newSavedMovies,
       };
     default:
       return state;
