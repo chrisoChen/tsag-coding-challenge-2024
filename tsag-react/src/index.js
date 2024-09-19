@@ -15,6 +15,7 @@ import createSagaMiddleware from "redux-saga";
 import { configureStore, Tuple } from "@reduxjs/toolkit";
 import { CookiesProvider } from "react-cookie";
 import rootSaga from "./sagas";
+import 'flowbite';
 
 const sagaMiddleware = createSagaMiddleware();
 const store = configureStore({
