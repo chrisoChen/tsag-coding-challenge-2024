@@ -8,7 +8,7 @@ function MovieCard({ title, year, poster, imdbID }) {
       <div></div>
       <div>
         <img
-          className="h-auto max-w-22 border-4 border-solid border-purple-300 "
+          className="h-auto max-w-22 border-4 rounded border-rounded"
           src={poster}
           alt=""
           data-imdb={imdbID}

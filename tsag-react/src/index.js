@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, redirect } from "react-router-dom";
 import ErrorPage from "./error-page";
 import Root from "./routes/root";
 import MyMovies from "./routes/myMovies";
@@ -15,7 +15,7 @@ import createSagaMiddleware from "redux-saga";
 import { configureStore, Tuple } from "@reduxjs/toolkit";
 import { CookiesProvider } from "react-cookie";
 import rootSaga from "./sagas";
-import 'flowbite';
+import "flowbite";
 
 const sagaMiddleware = createSagaMiddleware();
 const store = configureStore({
@@ -32,6 +32,10 @@ const router = createBrowserRouter([
     element: <Root />,
     errorElement: <ErrorPage />,
     children: [
+      {
+        index: true,
+        loader: async () => redirect("/search"),
+      },
       {
         path: "search",
         element: <Search />,
