@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Movies(models.Model): 
+    cookie_id = models.TextField(null=False, blank=False)
     title = models.TextField(null=True)
     year = models.TextField(null=True)
     rating = models.CharField(max_length=5, null=True)

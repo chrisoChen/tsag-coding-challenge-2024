@@ -3,13 +3,15 @@ import { connect } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import { useCookies } from "react-cookie";
 
 let MovieItem = ({ movies = [], savedMovies = {}, response, totalResults }) => {
   const dispatch = useDispatch();
+  const [cookies, setCookie] = useCookies("userId");
 
   const saveMovie = (event) => {
     const imbdID = event.target.getAttribute("data-imbdid");
-    dispatch({ type: "SAVE_MOVIES", imbdID: imbdID });
+    dispatch({ type: "SAVE_MOVIES", imbdID: imbdID, cookieId: cookies.userId });
   };
 
   const maxMovies = 5;
@@ -44,7 +46,7 @@ let MovieItem = ({ movies = [], savedMovies = {}, response, totalResults }) => {
               ? `Can only save ${maxMovies} movies`
               : movie.imdbID in savedMovies
               ? `Movie already saved`
-              : false
+              : `Save ${movie.Title}`
           }
           type="button"
           data-imbdid={movie.imdbID}

@@ -12,7 +12,7 @@ import { logger } from "redux-logger";
 import { applyMiddleware } from "redux";
 import createSagaMiddleware from "redux-saga";
 import { configureStore, Tuple } from "@reduxjs/toolkit";
-
+import { CookiesProvider } from 'react-cookie';
 import rootSaga from "./sagas";
 
 const sagaMiddleware = createSagaMiddleware();
@@ -42,9 +42,11 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <RouterProvider router={router} />
-    </Provider>
+    <CookiesProvider>
+        <Provider store={store}>
+          <RouterProvider router={router} />
+        </Provider>
+    </CookiesProvider>
   </React.StrictMode>
 );
 

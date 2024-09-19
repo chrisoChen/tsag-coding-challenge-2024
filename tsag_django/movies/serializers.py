@@ -20,7 +20,6 @@ class MoviesSerializer(serializers.ModelSerializer):
         ratings_data = validated_data.pop('ratings')
 
         movies = Movies.objects.create(**validated_data)
-        print(movies)
         for rating_data in ratings_data:
             Ratings.objects.create(movies=movies, **rating_data)
         return movies

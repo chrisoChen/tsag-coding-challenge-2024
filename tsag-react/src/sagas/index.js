@@ -14,13 +14,67 @@ function* fetchMovies(action) {
 
 function* saveMovies(action) {
   // Get more data to save movies in database
+
   const json = yield fetch(
     `http://www.omdbapi.com/?i=${action.imbdID}&apikey=${apiKey}`
   ).then((response) => response.json());
 
-  console.log(json);
+  // Format ratings data
+  let ratingsLowercased = json.Ratings.map((rating) => {
+    return Object.keys(rating).reduce((newObj, key) => {
+      newObj[key.toLowerCase()] = rating[key];
+      return newObj;
+    }, {});
+  });
 
+  console.log(ratingsLowercased);
+
+  const data = {
+    cookie_id: `${action.cookieId}`,
+    title: json.Title,
+    year: json.Year,
+    rated: json.rated,
+    released: new Date(json.Released),
+    runtime: json.Runtime,
+    genre: json.Genre,
+    director: json.Director,
+    writer: json.Writer,
+    actors: json.Actors,
+    plot: json.Plot,
+    language: json.Language,
+    country: json.country,
+    awards: json.Awards,
+    poster: json.Poster,
+    ratings: ratingsLowercased,
+    metascore: json.Metascore,
+    imdb_rating: json.imdbRating,
+    imdb_votes: json.imdbVotes,
+    imdb_id: json.imdbID,
+    type: json.Type,
+    dvd: json.DVD,
+    box_office: json.BoxOffice,
+    production: json.Production,
+    website: json.Website,
+  };
+
+  console.log(data);
   // TODO: Save movie to database
+  fetch("http://127.0.0.1:8000/movies/create/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      toast("Success: ", data);
+    })
+    .catch((error) => {
+      toast.error("Error:", error);
+    });
+
   yield put({ type: "MOVIES_SAVED", imdbID: action.imbdID });
 
   toast(`${json.Title} has been saved!`);

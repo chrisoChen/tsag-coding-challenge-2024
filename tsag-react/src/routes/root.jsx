@@ -4,8 +4,25 @@ import "../output.css";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { useCookies } from "react-cookie";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Root() {
+  const [cookies, setCookie] = useCookies(["userId"]);
+
+  useEffect(() => {
+    // Generate a new UUID
+    const newUserId = uuidv4();
+
+    // Check if the cookie already exists
+    if (!cookies.userId) {
+      // Only set the cookie if it does not exist
+      setCookie("userId", newUserId, { path: "/" });
+    } else {
+      console.log("Cookie already exists:", cookies.userId);
+    }
+  }, []);
+
   return (
     <div>
       <SideBar />
