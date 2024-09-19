@@ -1,15 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
-let MovieItem = ({ movies = [], response, totalResults }) => {
+let MovieItem = ({ movies = [], savedMovies = {}, response, totalResults }) => {
   const dispatch = useDispatch();
 
   const saveMovie = (event) => {
     const imbdID = event.target.getAttribute("data-imbdid");
     dispatch({ type: "SAVE_MOVIES", imbdID: imbdID });
   };
+
+  const maxMovies = 5;
+  const limitReached = Object.keys(savedMovies).length >= maxMovies;
+
+  useEffect(() => {
+    if (limitReached) toast(`Limit of ${maxMovies} reached for saving movies!`);
+  }, [limitReached]);
 
   const mappedMovies = movies.map((movie) => (
     <article
@@ -31,9 +39,18 @@ let MovieItem = ({ movies = [], response, totalResults }) => {
       </div>
       <div>
         <button
+          title={
+            limitReached
+              ? `Can only save ${maxMovies} movies`
+              : movie.imdbID in savedMovies
+              ? `Movie already saved`
+              : false
+          }
+          type="button"
           data-imbdid={movie.imdbID}
           onClick={saveMovie}
-          className="text-white text-sx sm:text-sm p-2 w-12 sm:w-20  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+          disabled={`${movie.imdbID}` in savedMovies || limitReached}
+          className="text-white text-sx sm:text-sm p-2 w-12 sm:w-20  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 disabled:opacity-30"
         >
           Save
         </button>
@@ -52,6 +69,7 @@ const mapStateToProps = (state) => ({
   movies: state.movies,
   response: state.response,
   totalResults: state.totalResults,
+  savedMovies: state.savedMovies,
 });
 
 MovieItem = connect(mapStateToProps, null)(MovieItem);
